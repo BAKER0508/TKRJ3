@@ -1,0 +1,82 @@
+ name: Build Android APK
+
+  on:
+    push:
+      branches: [ main, master, develop ]
+    pull_request:
+      branches: [ main, master ]
+    workflow_dispatch:
+      inputs:
+        version:
+          description: 'Version name for the build'
+          required: false
+          default: '1.0.0'
+
+  jobs:
+    build:
+      name: Build APK
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+      - name: Build with Gradle
+        run: ./gradlew build --stacktrace
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Rename APK files
+        run: |
+          mkdir -p outputs
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            cp app/build/outputs/apk/release/app-release.apk outputs/TKJY-QuestionSystem-release-${{
+  steps.date.outputs.date }}.apk
+          fi
+          if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
+            cp app/build/outputs/apk/debug/app-debug.apk outputs/TKJY-QuestionSystem-debug-${{
+  steps.date.outputs.date }}.apk
+          fi
+          ls -la outputs/
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TKJY-QuestionSystem-APKs-${{ steps.date.outputs.date }}
+          path: outputs/*.apk
+          retention-days: 30
