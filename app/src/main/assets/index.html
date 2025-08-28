@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>智能题库记忆系统 - 平板版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+            color: #FFFFFF;
+            line-height: 1.4;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 平板全屏布局 - 移除手机外壳 */
+        .container {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: clamp(20px, 3vw, 32px);
+            margin-bottom: clamp(24px, 4vh, 48px);
+        }
+
+        /* Screen Management - 全屏显示 */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            height: calc(100vh - 200px);
+            min-height: 0;
+        }
+
+        /* 平板优化的导航栏 */
+        .main-nav {
+            background: rgba(25, 25, 25, 0.9);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex !important;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #1E88E5, #42A5F5);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: clamp(18px, 2.5vw, 28px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: clamp(120px, 18vw, 200px);
+            flex: 1;
+            max-width: 240px;
+            min-height: 56px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        /* 内容区域全屏显示 */
+        .screen-content {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 10px;
+        }
+
+        /* 头部区域 */
+        .compact-header {
+            background: linear-gradient(135deg, #1E88E5, #1565C0);
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .header-title {
+            font-size: clamp(22px, 3vw, 32px);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-subtitle {
+            font-size: clamp(18px, 2.5vw, 24px);
+            opacity: 0.8;
+        }
+
+        /* 仪表板统计 - 优化平板布局 */
+        .dashboard-stats {
+            padding: 16px 20px;
+            background: rgba(15, 15, 15, 0.8);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+            min-height: 100px;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--stat-color);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .stat-item:nth-child(1) { --stat-color: #1E88E5; }
+        .stat-item:nth-child(2) { --stat-color: #4CAF50; }
+        .stat-item:nth-child(3) { --stat-color: #FF7043; }
+        .stat-item:nth-child(4) { --stat-color: #AB47BC; }
+
+        .stat-number {
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 800;
+            color: var(--stat-color);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: clamp(14px, 2vw, 20px);
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        /* 学习模式按钮区域 */
+        .study-modes {
+            padding: 20px;
+            background: rgba(15, 15, 15, 0.6);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .mode-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            padding: 24px;
+            border-radius: 12px;
+            font-size: clamp(18px, 2.5vw, 26px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .mode-btn:hover::before {
+            left: 100%;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(33, 150, 243, 0.3);
+        }
+
+        .mode-btn.memory { background: linear-gradient(135deg, #FF6B6B, #EE5A52); }
+        .mode-btn.practice { background: linear-gradient(135deg, #4ECDC4, #44A08D); }
+        .mode-btn.test { background: linear-gradient(135deg, #45B7D1, #3498DB); }
+        .mode-btn.review { background: linear-gradient(135deg, #96CEB4, #85A3B8); }
+
+        /* 题库管理区域 */
+        .library-section {
+            background: rgba(15, 15, 15, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: clamp(20px, 3vw, 28px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #42A5F5;
+        }
+
+        /* 分类快捷访问 - 优化平板布局 */
+        .category-quick-access {
+            margin-bottom: 20px;
+        }
+
+        .categories-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 8px 0;
+            scrollbar-width: thin;
+        }
+
+        .categories-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .categories-scroll::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .categories-scroll::-webkit-scrollbar-thumb {
+            background: rgba(66, 165, 245, 0.6);
+            border-radius: 3px;
+        }
+
+        .category-btn {
+            background: linear-gradient(135deg, #424242, #616161);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: clamp(14px, 2vw, 18px);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .category-btn:hover {
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            transform: scale(1.05);
+        }
+
+        /* 学习界面优化 */
+        .study-header {
+            background: linear-gradient(135deg, #1E88E5, #1565C0);
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .study-title {
+            font-size: clamp(22px, 3vw, 32px);
+            font-weight: 700;
+        }
+
+        .study-progress {
+            font-size: clamp(18px, 2.5vw, 24px);
+            opacity: 0.9;
+        }
+
+        /* 题目卡片区域 */
+        .question-area {
+            flex: 1;
+            background: rgba(15, 15, 15, 0.6);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-size: clamp(20px, 3vw, 32px);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 10px;
+            border-left: 4px solid #42A5F5;
+        }
+
+        .answer-text {
+            font-size: clamp(18px, 2.5vw, 28px);
+            line-height: 1.5;
+            padding: 20px;
+            background: rgba(30, 60, 30, 0.6);
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        /* 选择题选项 */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: rgba(30, 30, 30, 0.6);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 16px 20px;
+            border-radius: 10px;
+            font-size: clamp(16px, 2.5vw, 24px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: rgba(66, 165, 245, 0.3);
+            border-color: #42A5F5;
+        }
+
+        .option-btn.selected {
+            background: rgba(66, 165, 245, 0.2);
+            border-color: #42A5F5;
+        }
+
+        .option-btn.correct {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+
+        .option-btn.incorrect {
+            background: rgba(244, 67, 54, 0.3);
+            border-color: #F44336;
+        }
+
+        /* 控制按钮区域 */
+        .control-panel {
+            background: rgba(25, 25, 25, 0.9);
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: clamp(16px, 2.2vw, 22px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            min-height: 50px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(66, 165, 245, 0.3);
+        }
+
+        .control-btn.secondary {
+            background: linear-gradient(135deg, #424242, #616161);
+        }
+
+        .control-btn.success {
+            background: linear-gradient(135deg, #4CAF50, #45A049);
+        }
+
+        .control-btn.danger {
+            background: linear-gradient(135deg, #F44336, #D32F2F);
+        }
+
+        /* 隐藏元素 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 平板专用优化 */
+        @media (min-width: 1024px) {
+            .question-area {
+                padding: 32px;
+            }
+            
+            .control-panel {
+                padding: 20px;
+            }
+            
+            .study-header {
+                padding: 20px 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">智能题库记忆系统</h1>
+        <p class="page-subtitle">平板专用版 - 高效学习，智能记忆</p>
+        
+        <!-- 主导航栏 -->
+        <div class="main-nav">
+            <button class="nav-btn active" onclick="showScreen('studyScreen')">学习</button>
+            <button class="nav-btn" onclick="showScreen('importScreen')">导入</button>
+            <button class="nav-btn" onclick="showScreen('statsScreen')">统计</button>
+            <button class="nav-btn" onclick="showScreen('settingsScreen')">设置</button>
+        </div>
+
+        <!-- 学习界面 -->
+        <div class="screen active" id="studyScreen">
+            <div class="screen-content">
+                <!-- 主界面仪表板 -->
+                <div id="mainInterface">
+                    <div class="dashboard-stats">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number" id="totalQuestions">0</div>
+                                <div class="stat-label">总题数</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="studiedQuestions">0</div>
+                                <div class="stat-label">已学习</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="correctRate">0%</div>
+                                <div class="stat-label">正确率</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="studyStreak">0</div>
+                                <div class="stat-label">连续天数</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 学习模式选择 -->
+                    <div class="study-modes">
+                        <h2 class="section-title">选择学习模式</h2>
+                        <div class="modes-grid">
+                            <button class="mode-btn memory" onclick="startStudy('memory')">
+                                记忆模式<br><small>基于遗忘曲线的智能复习</small>
+                            </button>
+                            <button class="mode-btn practice" onclick="startStudy('practice')">
+                                练习模式<br><small>随机练习所有题目</small>
+                            </button>
+                            <button class="mode-btn test" onclick="startStudy('test')">
+                                测试模式<br><small>模拟考试环境测试</small>
+                            </button>
+                            <button class="mode-btn review" onclick="startStudy('review')">
+                                复习模式<br><small>复习错误和未掌握题目</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 题库管理 -->
+                    <div class="library-section">
+                        <h2 class="section-title">题库管理</h2>
+                        <div class="category-quick-access">
+                            <h3 style="margin-bottom: 12px; color: #ccc;">分类快速访问</h3>
+                            <div class="categories-scroll" id="categoryQuickAccess">
+                                <!-- 分类按钮将在这里动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学习界面 -->
+                <div id="studyInterface" class="hidden">
+                    <div class="study-header">
+                        <div class="study-title" id="studyModeTitle">学习模式</div>
+                        <div class="study-progress" id="studyProgress">0/0</div>
+                        <button class="control-btn secondary" onclick="endStudy()">结束学习</button>
+                    </div>
+
+                    <div class="question-area">
+                        <div class="question-text" id="questionText">题目内容显示区域</div>
+                        <div class="answer-text hidden" id="answerText">答案内容显示区域</div>
+                        <div class="options-container" id="optionsContainer">
+                            <!-- 选择题选项将在这里动态生成 -->
+                        </div>
+                    </div>
+
+                    <div class="control-panel">
+                        <button class="control-btn secondary" id="prevBtn" onclick="previousQuestion()">上一题</button>
+                        <button class="control-btn" id="showAnswerBtn" onclick="showAnswer()">显示答案</button>
+                        <button class="control-btn danger hidden" id="notRememberBtn" onclick="handleMemoryResponse(false)">不记得</button>
+                        <button class="control-btn success hidden" id="rememberBtn" onclick="handleMemoryResponse(true)">记得</button>
+                        <button class="control-btn danger hidden" id="incorrectBtn" onclick="handleVerification(false)">错误</button>
+                        <button class="control-btn success hidden" id="correctBtn" onclick="handleVerification(true)">正确</button>
+                        <button class="control-btn" id="nextBtn" onclick="nextQuestion()">下一题</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入界面 -->
+        <div class="screen" id="importScreen">
+            <div class="screen-content">
+                <div class="compact-header">
+                    <div class="header-title">题库导入</div>
+                    <div class="header-subtitle">支持 Excel、JSON、TXT 格式</div>
+                </div>
+                <div class="library-section">
+                    <h2 class="section-title">导入选项</h2>
+                    <div class="modes-grid">
+                        <button class="mode-btn" onclick="AndroidBridge.openFilePicker()">
+                            选择文件导入<br><small>支持Excel/JSON/TXT格式</small>
+                        </button>
+                        <button class="mode-btn" onclick="downloadTemplate()">
+                            下载模板<br><small>获取标准导入模板</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计界面 -->
+        <div class="screen" id="statsScreen">
+            <div class="screen-content">
+                <div class="compact-header">
+                    <div class="header-title">学习统计</div>
+                    <div class="header-subtitle">详细的学习数据分析</div>
+                </div>
+                <div class="dashboard-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="statsTotal">0</div>
+                            <div class="stat-label">累计学习</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statsAccuracy">0%</div>
+                            <div class="stat-label">总正确率</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statsTime">0h</div>
+                            <div class="stat-label">学习时长</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="statsDays">0</div>
+                            <div class="stat-label">学习天数</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="library-section">
+                    <h2 class="section-title">导出数据</h2>
+                    <div class="modes-grid">
+                        <button class="mode-btn" onclick="exportProgress()">
+                            导出学习记录<br><small>下载Excel格式学习数据</small>
+                        </button>
+                        <button class="mode-btn" onclick="exportQuestions()">
+                            导出题库<br><small>备份所有题目数据</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置界面 -->
+        <div class="screen" id="settingsScreen">
+            <div class="screen-content">
+                <div class="compact-header">
+                    <div class="header-title">设置</div>
+                    <div class="header-subtitle">个性化配置选项</div>
+                </div>
+                <div class="library-section">
+                    <h2 class="section-title">学习设置</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="color: #ccc; font-size: 18px; margin-bottom: 8px; display: block;">随机练习题数</label>
+                            <input type="number" id="randomQuestionCount" min="1" max="1000" value="20" 
+                                   style="width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; 
+                                          background: rgba(30,30,30,0.6); color: white; border: 1px solid #555;">
+                        </div>
+                        <div>
+                            <label style="color: #ccc; font-size: 18px; margin-bottom: 8px; display: block;">答案显示时间(秒)</label>
+                            <input type="number" id="answerShowTime" min="1" max="60" value="3" 
+                                   style="width: 100%; padding: 12px; font-size: 16px; border-radius: 8px; 
+                                          background: rgba(30,30,30,0.6); color: white; border: 1px solid #555;">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px;">
+                        <input type="checkbox" id="autoShowCard" style="width: 20px; height: 20px;">
+                        <label for="autoShowCard" style="color: #ccc; font-size: 18px;">自动显示答案卡片</label>
+                    </div>
+
+                    <div class="modes-grid">
+                        <button class="mode-btn" onclick="saveSettings()">
+                            保存设置<br><small>应用当前配置</small>
+                        </button>
+                        <button class="mode-btn danger" onclick="resetAllData()">
+                            重置数据<br><small>清除所有学习记录</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./libs/xlsx.full.min.js"></script>
+    <script>
+        // 全局变量
+        let libraries = {};
+        let currentStudySession = null;
+        let studyProgress = {};
+        let currentScreen = 'studyScreen';
+
+        // 数据存储适配器 - 替换localStorage
+        const StorageAdapter = {
+            saveData: function(key, value) {
+                if (window.AndroidBridge) {
+                    window.AndroidBridge.saveData(key, JSON.stringify(value));
+                } else {
+                    // 后备方案，用于浏览器测试
+                    localStorage.setItem(key, JSON.stringify(value));
+                }
+            },
+            
+            loadData: function(key, defaultValue = null) {
+                let data;
+                if (window.AndroidBridge) {
+                    data = window.AndroidBridge.loadData(key);
+                } else {
+                    // 后备方案，用于浏览器测试
+                    data = localStorage.getItem(key);
+                }
+                
+                if (data) {
+                    try {
+                        return JSON.parse(data);
+                    } catch (e) {
+                        console.error('Error parsing stored data:', e);
+                        return defaultValue;
+                    }
+                }
+                return defaultValue;
+            }
+        };
+
+        // 初始化函数
+        function init() {
+            loadProgress();
+            loadLibraries();
+            updateMainInterface();
+            loadSettings();
+            updateTime();
+            setInterval(updateTime, 1000);
+        }
+
+        // 时间更新
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN');
+            // 由于我们移除了状态栏，这里可以选择不显示或在其他位置显示
+        }
+
+        // 界面切换
+        function showScreen(screenName) {
+            // 隐藏所有界面
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // 更新导航按钮状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 显示目标界面
+            document.getElementById(screenName).classList.add('active');
+            
+            // 高亮当前导航按钮
+            event.target.classList.add('active');
+            
+            currentScreen = screenName;
+            
+            // 更新界面内容
+            if (screenName === 'studyScreen') {
+                updateMainInterface();
+            } else if (screenName === 'statsScreen') {
+                updateStatsInterface();
+            }
+        }
+
+        // 更新主界面
+        function updateMainInterface() {
+            updateDashboard();
+            updateCategoryQuickAccess();
+        }
+
+        // 更新仪表板数据
+        function updateDashboard() {
+            const totalQuestions = Object.keys(libraries).reduce((sum, lib) => {
+                return sum + (libraries[lib].questions ? libraries[lib].questions.length : 0);
+            }, 0);
+
+            const studiedQuestions = Object.keys(studyProgress).length;
+            
+            let correctCount = 0;
+            let totalAttempts = 0;
+            
+            Object.values(studyProgress).forEach(progress => {
+                if (progress.attempts) {
+                    totalAttempts += progress.attempts;
+                    correctCount += progress.correctCount || 0;
+                }
+            });
+            
+            const correctRate = totalAttempts > 0 ? Math.round((correctCount / totalAttempts) * 100) : 0;
+            
+            // 计算学习连续天数
+            const today = new Date().toDateString();
+            const studyStreak = calculateStudyStreak();
+
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            document.getElementById('studiedQuestions').textContent = studiedQuestions;
+            document.getElementById('correctRate').textContent = correctRate + '%';
+            document.getElementById('studyStreak').textContent = studyStreak;
+        }
+
+        // 计算学习连续天数
+        function calculateStudyStreak() {
+            const studyDates = StorageAdapter.loadData('studyDates', []);
+            if (studyDates.length === 0) return 0;
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            let streak = 0;
+            
+            for (let i = studyDates.length - 1; i >= 0; i--) {
+                const studyDate = new Date(studyDates[i]);
+                studyDate.setHours(0, 0, 0, 0);
+                
+                const diffDays = Math.floor((today - studyDate) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === streak) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        // 更新分类快速访问
+        function updateCategoryQuickAccess() {
+            const container = document.getElementById('categoryQuickAccess');
+            container.innerHTML = '';
+            
+            // 添加"全部题目"按钮
+            const allBtn = document.createElement('button');
+            allBtn.className = 'category-btn';
+            allBtn.textContent = '全部题目';
+            allBtn.onclick = () => startStudyWithCategory('practice', null);
+            container.appendChild(allBtn);
+            
+            // 添加分类按钮
+            const categories = new Set();
+            Object.values(libraries).forEach(lib => {
+                if (lib.questions) {
+                    lib.questions.forEach(q => {
+                        if (q.category) categories.add(q.category);
+                    });
+                }
+            });
+            
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.textContent = category;
+                btn.onclick = () => startStudyWithCategory('practice', category);
+                container.appendChild(btn);
+            });
+        }
+
+        // 学习功能
+        function startStudy(mode) {
+            const questions = getAllQuestions();
+            if (questions.length === 0) {
+                alert('暂无题目，请先导入题库！');
+                return;
+            }
+            
+            // 根据模式筛选题目
+            let filteredQuestions;
+            switch (mode) {
+                case 'memory':
+                    filteredQuestions = questions.filter(q => needsReview(q));
+                    if (filteredQuestions.length === 0) filteredQuestions = questions;
+                    break;
+                case 'review':
+                    filteredQuestions = questions.filter(q => {
+                        const progress = studyProgress[q.id];
+                        return progress && progress.attempts > 0 && (progress.correctCount / progress.attempts) < 0.7;
+                    });
+                    if (filteredQuestions.length === 0) {
+                        alert('没有需要复习的题目！');
+                        return;
+                    }
+                    break;
+                case 'test':
+                    const randomCount = parseInt(StorageAdapter.loadData('randomQuestionCount', 20));
+                    filteredQuestions = shuffleArray(questions).slice(0, randomCount);
+                    break;
+                default:
+                    const defaultCount = parseInt(StorageAdapter.loadData('randomQuestionCount', 20));
+                    filteredQuestions = shuffleArray(questions).slice(0, defaultCount);
+            }
+            
+            startStudySession(mode, filteredQuestions);
+        }
+
+        function startStudyWithCategory(mode, category) {
+            const questions = category ? 
+                getAllQuestions().filter(q => q.category === category) : 
+                getAllQuestions();
+            
+            if (questions.length === 0) {
+                alert('该分类下没有题目！');
+                return;
+            }
+            
+            const randomCount = parseInt(StorageAdapter.loadData('randomQuestionCount', 20));
+            const filteredQuestions = shuffleArray(questions).slice(0, randomCount);
+            
+            startStudySession(mode, filteredQuestions);
+        }
+
+        function startStudySession(mode, questions) {
+            currentStudySession = {
+                mode: mode,
+                questions: questions,
+                currentIndex: 0,
+                startTime: Date.now(),
+                answers: {}
+            };
+            
+            document.getElementById('mainInterface').classList.add('hidden');
+            document.getElementById('studyInterface').classList.remove('hidden');
+            
+            updateStudyModeTitle(mode);
+            displayCurrentQuestion();
+            recordStudyDay();
+        }
+
+        function recordStudyDay() {
+            const today = new Date().toDateString();
+            const studyDates = StorageAdapter.loadData('studyDates', []);
+            
+            if (!studyDates.includes(today)) {
+                studyDates.push(today);
+                StorageAdapter.saveData('studyDates', studyDates);
+            }
+        }
+
+        function updateStudyModeTitle(mode) {
+            const titles = {
+                'memory': '记忆模式',
+                'practice': '练习模式',
+                'test': '测试模式',
+                'review': '复习模式'
+            };
+            document.getElementById('studyModeTitle').textContent = titles[mode] || '学习模式';
+        }
+
+        function displayCurrentQuestion() {
+            const session = currentStudySession;
+            const question = session.questions[session.currentIndex];
+            
+            // 更新进度
+            document.getElementById('studyProgress').textContent = 
+                `${session.currentIndex + 1}/${session.questions.length}`;
+            
+            // 显示题目
+            document.getElementById('questionText').textContent = question.question;
+            
+            // 隐藏答案和控制按钮
+            document.getElementById('answerText').classList.add('hidden');
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                if (btn.id === 'prevBtn' || btn.id === 'showAnswerBtn' || btn.id === 'nextBtn') {
+                    btn.classList.remove('hidden');
+                } else {
+                    btn.classList.add('hidden');
+                }
+            });
+            
+            // 处理选择题
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            if (question.type === 'choice' && question.options) {
+                question.options.forEach((option, index) => {
+                    const optionBtn = document.createElement('button');
+                    optionBtn.className = 'option-btn';
+                    optionBtn.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                    optionBtn.onclick = () => selectOption(index);
+                    optionsContainer.appendChild(optionBtn);
+                });
+            }
+            
+            // 更新按钮状态
+            document.getElementById('prevBtn').disabled = session.currentIndex === 0;
+            document.getElementById('nextBtn').disabled = session.currentIndex === session.questions.length - 1;
+        }
+
+        function showAnswer() {
+            const question = currentStudySession.questions[currentStudySession.currentIndex];
+            
+            document.getElementById('answerText').textContent = question.answer;
+            document.getElementById('answerText').classList.remove('hidden');
+            document.getElementById('showAnswerBtn').classList.add('hidden');
+            
+            // 根据模式显示相应的控制按钮
+            if (currentStudySession.mode === 'memory') {
+                document.getElementById('notRememberBtn').classList.remove('hidden');
+                document.getElementById('rememberBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('incorrectBtn').classList.remove('hidden');
+                document.getElementById('correctBtn').classList.remove('hidden');
+                
+                // 自动显示答案的情况下，设置延时
+                const autoShowCard = StorageAdapter.loadData('autoShowCard', false);
+                if (autoShowCard) {
+                    const answerShowTime = parseInt(StorageAdapter.loadData('answerShowTime', 3)) * 1000;
+                    setTimeout(() => {
+                        if (document.getElementById('answerText').classList.contains('hidden') === false) {
+                            // 可以在这里添加自动下一题的逻辑
+                        }
+                    }, answerShowTime);
+                }
+            }
+        }
+
+        function selectOption(optionIndex) {
+            const question = currentStudySession.questions[currentStudySession.currentIndex];
+            const options = document.querySelectorAll('.option-btn');
+            
+            // 清除之前的选择
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // 标记当前选择
+            options[optionIndex].classList.add('selected');
+            
+            // 保存答案
+            currentStudySession.answers[currentStudySession.currentIndex] = optionIndex;
+            
+            // 显示正确答案
+            setTimeout(() => {
+                showAnswer();
+                
+                // 标记正确/错误选项
+                options.forEach((opt, idx) => {
+                    if (idx === question.correctAnswer) {
+                        opt.classList.add('correct');
+                    } else if (idx === optionIndex && idx !== question.correctAnswer) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
+                // 记录答题结果
+                const correct = optionIndex === question.correctAnswer;
+                recordAnswer(question, correct);
+                
+                // 自动下一题
+                setTimeout(() => {
+                    nextQuestion();
+                }, 2000);
+            }, 500);
+        }
+
+        function handleMemoryResponse(remember) {
+            const question = currentStudySession.questions[currentStudySession.currentIndex];
+            
+            if (!remember) {
+                // 不记得，显示答案
+                showAnswer();
+                document.getElementById('notRememberBtn').classList.add('hidden');
+                document.getElementById('rememberBtn').classList.add('hidden');
+                document.getElementById('incorrectBtn').classList.remove('hidden');
+                document.getElementById('correctBtn').classList.remove('hidden');
+            } else {
+                // 记得，直接记录为正确
+                recordAnswer(question, true);
+                nextQuestion();
+            }
+        }
+
+        function handleVerification(correct) {
+            const question = currentStudySession.questions[currentStudySession.currentIndex];
+            recordAnswer(question, correct);
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 1000);
+        }
+
+        function recordAnswer(question, correct) {
+            if (!studyProgress[question.id]) {
+                studyProgress[question.id] = {
+                    attempts: 0,
+                    correctCount: 0,
+                    lastStudied: Date.now(),
+                    difficulty: question.difficulty || 'normal'
+                };
+            }
+            
+            const progress = studyProgress[question.id];
+            progress.attempts++;
+            if (correct) progress.correctCount++;
+            progress.lastStudied = Date.now();
+            
+            // 根据答题情况调整复习间隔
+            if (correct) {
+                progress.nextReview = Date.now() + getReviewInterval(progress.correctCount);
+            } else {
+                progress.nextReview = Date.now() + 60000; // 1分钟后再次复习
+            }
+            
+            saveProgress();
+        }
+
+        function getReviewInterval(correctCount) {
+            // 基于遗忘曲线的复习间隔（毫秒）
+            const intervals = [
+                60000,      // 1分钟
+                300000,     // 5分钟
+                1800000,    // 30分钟
+                7200000,    // 2小时
+                86400000,   // 1天
+                259200000,  // 3天
+                604800000,  // 1周
+                2592000000  // 30天
+            ];
+            
+            return intervals[Math.min(correctCount, intervals.length - 1)];
+        }
+
+        function needsReview(question) {
+            const progress = studyProgress[question.id];
+            if (!progress) return true;
+            
+            return Date.now() >= (progress.nextReview || 0);
+        }
+
+        function nextQuestion() {
+            if (currentStudySession.currentIndex < currentStudySession.questions.length - 1) {
+                currentStudySession.currentIndex++;
+                displayCurrentQuestion();
+            } else {
+                endStudy();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentStudySession.currentIndex > 0) {
+                currentStudySession.currentIndex--;
+                displayCurrentQuestion();
+            }
+        }
+
+        function endStudy() {
+            // 显示学习总结
+            const session = currentStudySession;
+            const duration = Math.round((Date.now() - session.startTime) / 1000 / 60);
+            const totalAnswered = Object.keys(session.answers).length;
+            
+            alert(`学习完成！\n答题数量: ${totalAnswered}\n用时: ${duration} 分钟`);
+            
+            // 返回主界面
+            document.getElementById('studyInterface').classList.add('hidden');
+            document.getElementById('mainInterface').classList.remove('hidden');
+            
+            currentStudySession = null;
+            updateMainInterface();
+        }
+
+        // 数据管理
+        function saveProgress() {
+            StorageAdapter.saveData('studyProgress', studyProgress);
+        }
+
+        function loadProgress() {
+            studyProgress = StorageAdapter.loadData('studyProgress', {});
+        }
+
+        function saveLibraries() {
+            StorageAdapter.saveData('libraries', libraries);
+        }
+
+        function loadLibraries() {
+            libraries = StorageAdapter.loadData('libraries', {});
+        }
+
+        function getAllQuestions() {
+            const questions = [];
+            Object.values(libraries).forEach(lib => {
+                if (lib.questions) {
+                    questions.push(...lib.questions);
+                }
+            });
+            return questions;
+        }
+
+        // 工具函数
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // 文件处理函数 - 将被原生Android接口调用
+        function onFileSelected(fileContent) {
+            try {
+                // 处理不同格式的文件内容
+                let data;
+                
+                // 尝试解析JSON
+                try {
+                    data = JSON.parse(fileContent);
+                } catch (e) {
+                    // 如果不是JSON，尝试按行解析TXT
+                    data = parseTxtContent(fileContent);
+                }
+                
+                if (data && data.questions) {
+                    // 标准格式
+                    processImportedData(data);
+                } else if (Array.isArray(data)) {
+                    // 题目数组格式
+                    processImportedData({ questions: data });
+                } else {
+                    throw new Error('无法识别的文件格式');
+                }
+                
+            } catch (error) {
+                alert('文件导入失败: ' + error.message);
+            }
+        }
+
+        function parseTxtContent(content) {
+            const lines = content.split('\\n');
+            const questions = [];
+            let currentQuestion = {};
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+                
+                if (line.startsWith('Q:') || line.startsWith('题目:')) {
+                    if (currentQuestion.question) {
+                        questions.push(currentQuestion);
+                    }
+                    currentQuestion = {
+                        id: questions.length + 1,
+                        question: line.substring(line.indexOf(':') + 1).trim(),
+                        type: 'text'
+                    };
+                } else if (line.startsWith('A:') || line.startsWith('答案:')) {
+                    currentQuestion.answer = line.substring(line.indexOf(':') + 1).trim();
+                }
+            }
+            
+            if (currentQuestion.question) {
+                questions.push(currentQuestion);
+            }
+            
+            return { questions: questions };
+        }
+
+        function processImportedData(data) {
+            if (!data.questions || !Array.isArray(data.questions)) {
+                alert('导入失败：文件格式不正确');
+                return;
+            }
+            
+            const libraryName = data.name || `导入题库_${Date.now()}`;
+            
+            // 处理题目ID
+            data.questions.forEach((q, index) => {
+                if (!q.id) q.id = `${libraryName}_${index + 1}`;
+                if (!q.type) q.type = 'text';
+                if (!q.category) q.category = '默认分类';
+            });
+            
+            libraries[libraryName] = data;
+            saveLibraries();
+            updateMainInterface();
+            
+            alert(`成功导入 ${data.questions.length} 道题目！`);
+        }
+
+        // 导出功能
+        function downloadTemplate() {
+            const template = {
+                name: "题库模板",
+                description: "这是一个标准的题库模板文件",
+                questions: [
+                    {
+                        id: 1,
+                        question: "这是一道示例选择题？",
+                        answer: "A",
+                        type: "choice",
+                        options: ["选项A", "选项B", "选项C", "选项D"],
+                        correctAnswer: 0,
+                        category: "示例分类",
+                        difficulty: "easy"
+                    },
+                    {
+                        id: 2,
+                        question: "这是一道示例文本题？",
+                        answer: "这是答案内容",
+                        type: "text",
+                        category: "示例分类",
+                        difficulty: "normal"
+                    }
+                ]
+            };
+            
+            const content = JSON.stringify(template, null, 2);
+            if (window.AndroidBridge) {
+                window.AndroidBridge.saveFile("题库模板.json", content, "application/json");
+            } else {
+                // 浏览器后备方案
+                downloadFile("题库模板.json", content);
+            }
+        }
+
+        function exportProgress() {
+            const data = {
+                studyProgress: studyProgress,
+                exportTime: new Date().toISOString(),
+                totalQuestions: Object.keys(studyProgress).length
+            };
+            
+            const content = JSON.stringify(data, null, 2);
+            if (window.AndroidBridge) {
+                window.AndroidBridge.saveFile("学习记录.json", content, "application/json");
+            } else {
+                downloadFile("学习记录.json", content);
+            }
+        }
+
+        function exportQuestions() {
+            const data = {
+                libraries: libraries,
+                exportTime: new Date().toISOString(),
+                totalLibraries: Object.keys(libraries).length,
+                totalQuestions: getAllQuestions().length
+            };
+            
+            const content = JSON.stringify(data, null, 2);
+            if (window.AndroidBridge) {
+                window.AndroidBridge.saveFile("题库导出.json", content, "application/json");
+            } else {
+                downloadFile("题库导出.json", content);
+            }
+        }
+
+        // 浏览器后备下载函数
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 统计界面
+        function updateStatsInterface() {
+            const totalQuestions = getAllQuestions().length;
+            const studiedCount = Object.keys(studyProgress).length;
+            
+            let totalAttempts = 0;
+            let totalCorrect = 0;
+            let totalTime = 0;
+            
+            Object.values(studyProgress).forEach(progress => {
+                totalAttempts += progress.attempts || 0;
+                totalCorrect += progress.correctCount || 0;
+            });
+            
+            const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+            const studyDays = StorageAdapter.loadData('studyDates', []).length;
+            
+            document.getElementById('statsTotal').textContent = totalAttempts;
+            document.getElementById('statsAccuracy').textContent = accuracy + '%';
+            document.getElementById('statsTime').textContent = Math.round(totalTime / 3600) + 'h';
+            document.getElementById('statsDays').textContent = studyDays;
+        }
+
+        // 设置功能
+        function loadSettings() {
+            const randomCount = StorageAdapter.loadData('randomQuestionCount', 20);
+            const answerTime = StorageAdapter.loadData('answerShowTime', 3);
+            const autoShow = StorageAdapter.loadData('autoShowCard', false);
+            
+            if (document.getElementById('randomQuestionCount')) {
+                document.getElementById('randomQuestionCount').value = randomCount;
+            }
+            if (document.getElementById('answerShowTime')) {
+                document.getElementById('answerShowTime').value = answerTime;
+            }
+            if (document.getElementById('autoShowCard')) {
+                document.getElementById('autoShowCard').checked = autoShow;
+            }
+        }
+
+        function saveSettings() {
+            const randomCount = parseInt(document.getElementById('randomQuestionCount').value);
+            const answerTime = parseInt(document.getElementById('answerShowTime').value);
+            const autoShow = document.getElementById('autoShowCard').checked;
+            
+            StorageAdapter.saveData('randomQuestionCount', randomCount);
+            StorageAdapter.saveData('answerShowTime', answerTime);
+            StorageAdapter.saveData('autoShowCard', autoShow);
+            
+            alert('设置已保存！');
+        }
+
+        function resetAllData() {
+            if (confirm('确定要重置所有数据吗？此操作无法撤销！')) {
+                if (confirm('最后确认：这将清除所有学习记录和题库数据！')) {
+                    studyProgress = {};
+                    libraries = {};
+                    
+                    StorageAdapter.saveData('studyProgress', {});
+                    StorageAdapter.saveData('libraries', {});
+                    StorageAdapter.saveData('studyDates', []);
+                    
+                    updateMainInterface();
+                    alert('所有数据已重置！');
+                }
+            }
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

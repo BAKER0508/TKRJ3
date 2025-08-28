@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">智能题库记忆系统</string>
+    <string name="app_subtitle">终极完整版</string>
+    
+    <!-- Navigation -->
+    <string name="nav_study">学习</string>
+    <string name="nav_import">导入</string>
+    <string name="nav_stats">统计</string>
+    <string name="nav_settings">设置</string>
+    
+    <!-- Study modes -->
+    <string name="memory_mode">记忆模式</string>
+    <string name="practice_mode">练习模式</string>
+    <string name="test_mode">测试模式</string>
+    <string name="review_mode">复习模式</string>
+    
+    <!-- Memory responses -->
+    <string name="remember">记得</string>
+    <string name="not_remember">不记得</string>
+    <string name="verify_correct">正确</string>
+    <string name="verify_incorrect">错误</string>
+    
+    <!-- Study controls -->
+    <string name="next_question">下一题</string>
+    <string name="prev_question">上一题</string>
+    <string name="show_answer">显示答案</string>
+    <string name="submit_answer">提交答案</string>
+    <string name="pause_study">暂停学习</string>
+    <string name="resume_study">继续学习</string>
+    <string name="end_study">结束学习</string>
+    
+    <!-- Question management -->
+    <string name="all_categories">全部分类</string>
+    <string name="select_category">选择分类</string>
+    <string name="question_count">题目数量</string>
+    <string name="unlimited">不限制</string>
+    
+    <!-- Study statistics -->
+    <string name="total_questions">总题数</string>
+    <string name="correct_answers">正确数</string>
+    <string name="accuracy_rate">正确率</string>
+    <string name="study_time">学习时间</string>
+    <string name="questions_per_minute">题/分钟</string>
+    
+    <!-- Import/Export -->
+    <string name="import_questions">导入题目</string>
+    <string name="export_questions">导出题目</string>
+    <string name="import_success">导入成功</string>
+    <string name="export_success">导出成功</string>
+    <string name="file_format_error">文件格式错误</string>
+    
+    <!-- Settings -->
+    <string name="auto_next_delay">自动下一题延时</string>
+    <string name="show_progress">显示进度</string>
+    <string name="sound_effects">音效</string>
+    <string name="vibration">震动</string>
+    <string name="theme_settings">主题设置</string>
+    <string name="data_backup">数据备份</string>
+    
+    <!-- Time formats -->
+    <string name="seconds_format">%d秒</string>
+    <string name="minutes_format">%d分钟</string>
+    <string name="hours_format">%d小时%d分钟</string>
+    
+    <!-- Dialogs -->
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
+    <string name="warning">警告</string>
+    <string name="error">错误</string>
+    <string name="success">成功</string>
+    
+    <!-- Question format -->
+    <string name="question_number_format">第%d题</string>
+    <string name="progress_format">%d/%d</string>
+    <string name="accuracy_format">%.1f%%</string>
+    
+    <!-- Categories -->
+    <string name="category_management">分类管理</string>
+    <string name="add_category">添加分类</string>
+    <string name="edit_category">编辑分类</string>
+    <string name="delete_category">删除分类</string>
+    
+    <!-- Backup and restore -->
+    <string name="backup_data">备份数据</string>
+    <string name="restore_data">恢复数据</string>
+    <string name="backup_success">备份成功</string>
+    <string name="restore_success">恢复成功</string>
+</resources>

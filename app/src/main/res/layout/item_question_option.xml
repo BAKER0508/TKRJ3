@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/margin_small">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/option_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="start|center_vertical"
+        android:padding="@dimen/padding_medium"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body1"
+        android:textSize="@dimen/option_text_size"
+        style="@style/Widget.Material3.Button.TextButton"
+        tools:text="A. 选项内容">
+
+        <TextView
+            android:id="@+id/option_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body1"
+            android:textSize="@dimen/option_text_size"
+            android:visibility="gone"
+            tools:text="A. 选项内容" />
+
+    </com.google.android.material.button.MaterialButton>
+
+</LinearLayout>

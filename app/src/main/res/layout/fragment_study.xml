@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/container_padding">
+
+    <!-- Dashboard Section (shown when not studying) -->
+    <ScrollView
+        android:id="@+id/dashboard_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Study Mode Selection -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.TKJYQuestionSystem.Card"
+                android:layout_marginBottom="@dimen/margin_medium">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="学习模式"
+                        android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Headline2"
+                        android:layout_marginBottom="@dimen/margin_medium" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_memory_mode"
+                            style="@style/Widget.TKJYQuestionSystem.Button"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:text="@string/memory_mode" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_practice_mode"
+                            style="@style/Widget.TKJYQuestionSystem.Button"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:text="@string/practice_mode" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_test_mode"
+                            style="@style/Widget.TKJYQuestionSystem.Button"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:text="@string/test_mode" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_review_mode"
+                            style="@style/Widget.TKJYQuestionSystem.Button"
+                            android:layout_weight="1"
+                            android:text="@string/review_mode" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Quick Statistics -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.TKJYQuestionSystem.Card"
+                android:layout_marginBottom="@dimen/margin_medium">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="今日统计"
+                        android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Headline2"
+                        android:layout_marginBottom="@dimen/margin_medium" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/today_questions"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/stat_value_text_size"
+                                android:textColor="@color/primary_blue_light"
+                                android:textStyle="bold"
+                                tools:text="25" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="已学题目"
+                                android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body2" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/today_accuracy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/stat_value_text_size"
+                                android:textColor="@color/success_color"
+                                android:textStyle="bold"
+                                tools:text="85%" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="正确率"
+                                android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body2" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/today_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/stat_value_text_size"
+                                android:textColor="@color/warning_color"
+                                android:textStyle="bold"
+                                tools:text="45m" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="学习时长"
+                                android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body2" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Category Quick Access -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.TKJYQuestionSystem.Card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="分类快速访问"
+                        android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Headline2"
+                        android:layout_marginBottom="@dimen/margin_medium" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/category_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/item_category_chip" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Study Interface (shown during study session) -->
+    <LinearLayout
+        android:id="@+id/study_interface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Study Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_medium"
+            android:background="@drawable/nav_background">
+
+            <TextView
+                android:id="@+id/study_mode_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Headline2"
+                tools:text="记忆模式" />
+
+            <TextView
+                android:id="@+id/question_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body1"
+                tools:text="1/10" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_end_study"
+                style="@style/Widget.TKJYQuestionSystem.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_medium"
+                android:text="@string/end_study" />
+
+        </LinearLayout>
+
+        <!-- Progress Bar -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/study_progress"
+            style="@style/Widget.TKJYQuestionSystem.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium" />
+
+        <!-- Question Area -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/question_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_medium">
+
+                <!-- Question Text -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.TKJYQuestionSystem.Card"
+                    android:layout_marginBottom="@dimen/margin_medium">
+
+                    <TextView
+                        android:id="@+id/question_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/card_padding"
+                        android:textSize="@dimen/question_text_size"
+                        android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body1"
+                        tools:text="这是一个示例问题？" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Answer Area -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/answer_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.TKJYQuestionSystem.Card"
+                    android:layout_marginBottom="@dimen/margin_medium"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/answer_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/card_padding"
+                        android:textSize="@dimen/answer_text_size"
+                        android:textAppearance="@style/TextAppearance.TKJYQuestionSystem.Body1"
+                        tools:text="这是答案" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Options (for choice questions) -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/options_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_medium"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_question_option" />
+
+                <!-- Memory Mode Controls -->
+                <LinearLayout
+                    android:id="@+id/memory_controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_not_remember"
+                        style="@style/Widget.TKJYQuestionSystem.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/margin_medium"
+                        android:backgroundTint="@color/error_color"
+                        android:text="@string/not_remember" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_remember"
+                        style="@style/Widget.TKJYQuestionSystem.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/success_color"
+                        android:text="@string/remember" />
+
+                </LinearLayout>
+
+                <!-- Answer Verification Controls -->
+                <LinearLayout
+                    android:id="@+id/verification_controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_verify_incorrect"
+                        style="@style/Widget.TKJYQuestionSystem.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/margin_medium"
+                        android:backgroundTint="@color/error_color"
+                        android:text="@string/verify_incorrect" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_verify_correct"
+                        style="@style/Widget.TKJYQuestionSystem.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/success_color"
+                        android:text="@string/verify_correct" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Study Navigation Controls -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="@dimen/padding_medium"
+            android:background="@drawable/nav_background">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_prev_question"
+                style="@style/Widget.TKJYQuestionSystem.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:text="@string/prev_question" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_show_answer"
+                style="@style/Widget.TKJYQuestionSystem.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:text="@string/show_answer" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_next_question"
+                style="@style/Widget.TKJYQuestionSystem.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/next_question" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

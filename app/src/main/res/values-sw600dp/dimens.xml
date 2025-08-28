@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 10.3" tablet specific dimensions (sw600dp) -->
+    <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
+    <dimen name="text_size_xlarge">26sp</dimen>
+    <dimen name="text_size_title">32sp</dimen>
+    
+    <dimen name="margin_tiny">6dp</dimen>
+    <dimen name="margin_small">12dp</dimen>
+    <dimen name="margin_medium">20dp</dimen>
+    <dimen name="margin_large">28dp</dimen>
+    <dimen name="margin_xlarge">36dp</dimen>
+    
+    <dimen name="padding_small">12dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">20dp</dimen>
+    
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="corner_radius_medium">10dp</dimen>
+    <dimen name="corner_radius_large">12dp</dimen>
+    
+    <!-- Navigation for tablets -->
+    <dimen name="nav_button_height">48dp</dimen>
+    <dimen name="nav_button_min_width">120dp</dimen>
+    
+    <!-- Question display for tablets -->
+    <dimen name="question_text_size">20sp</dimen>
+    <dimen name="answer_text_size">18sp</dimen>
+    <dimen name="option_text_size">18sp</dimen>
+    
+    <!-- Cards and containers for tablets -->
+    <dimen name="card_padding">20dp</dimen>
+    <dimen name="card_margin">12dp</dimen>
+    <dimen name="container_padding">12dp</dimen>
+    
+    <!-- Study controls for tablets -->
+    <dimen name="control_button_size">56dp</dimen>
+    <dimen name="fab_size">64dp</dimen>
+    
+    <!-- Statistics for tablets -->
+    <dimen name="stat_value_text_size">28sp</dimen>
+    <dimen name="stat_label_text_size">16sp</dimen>
+</resources>

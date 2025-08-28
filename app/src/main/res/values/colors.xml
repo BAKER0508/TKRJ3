@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary theme colors matching HTML -->
+    <color name="primary_blue">#1E88E5</color>
+    <color name="primary_blue_light">#42A5F5</color>
+    <color name="primary_green">#4CAF50</color>
+    <color name="primary_green_light">#66BB6A</color>
+    
+    <!-- Background colors -->
+    <color name="background_dark">#0a0a0a</color>
+    <color name="background_dark_secondary">#1a1a1a</color>
+    <color name="background_dark_tertiary">#0f0f0f</color>
+    <color name="surface_color">#191919</color>
+    <color name="surface_color_elevated">#252525</color>
+    
+    <!-- Text colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#888888</color>
+    <color name="text_accent">#42A5F5</color>
+    
+    <!-- Status colors -->
+    <color name="success_color">#4CAF50</color>
+    <color name="error_color">#F44336</color>
+    <color name="warning_color">#FF9800</color>
+    <color name="info_color">#2196F3</color>
+    
+    <!-- Button states -->
+    <color name="button_pressed">#0D47A1</color>
+    <color name="button_disabled">#424242</color>
+    
+    <!-- Overlay colors -->
+    <color name="overlay_light">#33FFFFFF</color>
+    <color name="overlay_dark">#33000000</color>
+    <color name="card_background">#1E1E1E</color>
+    
+    <!-- Progress colors -->
+    <color name="progress_background">#333333</color>
+    <color name="progress_fill">#42A5F5</color>
+    
+    <!-- Navigation colors -->
+    <color name="nav_background">#191919E6</color>
+    <color name="nav_item_active">#4CAF50</color>
+    <color name="nav_item_inactive">#1E88E5</color>
+</resources>

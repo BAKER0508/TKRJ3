@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base dimensions for phones -->
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_xlarge">24sp</dimen>
+    <dimen name="text_size_title">28sp</dimen>
+    
+    <dimen name="margin_tiny">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_xlarge">32dp</dimen>
+    
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">12dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+    
+    <dimen name="corner_radius_small">6dp</dimen>
+    <dimen name="corner_radius_medium">8dp</dimen>
+    <dimen name="corner_radius_large">10dp</dimen>
+    
+    <dimen name="elevation_low">2dp</dimen>
+    <dimen name="elevation_medium">4dp</dimen>
+    <dimen name="elevation_high">8dp</dimen>
+    
+    <!-- Navigation -->
+    <dimen name="nav_button_height">44dp</dimen>
+    <dimen name="nav_button_min_width">90dp</dimen>
+    
+    <!-- Question display -->
+    <dimen name="question_text_size">18sp</dimen>
+    <dimen name="answer_text_size">16sp</dimen>
+    <dimen name="option_text_size">16sp</dimen>
+    
+    <!-- Cards and containers -->
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="container_padding">8dp</dimen>
+    
+    <!-- Progress indicators -->
+    <dimen name="progress_height">4dp</dimen>
+    <dimen name="circular_progress_size">48dp</dimen>
+    
+    <!-- Study controls -->
+    <dimen name="control_button_size">48dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    
+    <!-- Statistics -->
+    <dimen name="stat_value_text_size">24sp</dimen>
+    <dimen name="stat_label_text_size">14sp</dimen>
+</resources>
